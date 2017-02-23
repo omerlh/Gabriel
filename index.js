@@ -4,13 +4,13 @@ var express = require('express')
 var RSS = require('rss');
 var fileUpload = require('express-fileupload');
 
-function getFeed(){
+async function getFeed(){
   var feed = new RSS({
     title: package.name
   });
 
-  const uris = Object.keys(package.dependencies).map(function(key) {
-    return axios.get('https://api.npms.io/v2/package/' + key);
+  const uris = Object.keys(package.dependencies).map(async function(key) {
+    return await axios.get('https://api.npms.io/v2/package/' + key);
   });
 
   return axios.all(uris)
