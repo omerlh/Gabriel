@@ -3,6 +3,8 @@ services:
   app:
     build:
       context: .
+    environment:
+      - NODE_ENV=production
   test:
     build:
       context: .

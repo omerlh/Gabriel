@@ -1,15 +1,17 @@
+'use strict';
+
 const axios = require('axios');
-const package = require('./package.json');
-var express = require('express')
+const packageFile = require('./package.json');
+const restify = require('restify');
 var RSS = require('rss');
 var fileUpload = require('express-fileupload');
 
 async function getFeed(){
   var feed = new RSS({
-    title: package.name
+    title: packageFile.name
   });
 
-  const uris = Object.keys(package.dependencies).map(async function(key) {
+  const uris = Object.keys(packageFile.dependencies).map(async function(key) {
     return await axios.get('https://api.npms.io/v2/package/' + key);
   });
 
@@ -31,8 +33,8 @@ async function getFeed(){
     });
 }
 
-  var app = express()
-  app.use(fileUpload({
+  var server = restify.createServer();
+  server.use(fileUpload({
     limits: {
       fileSize: 50 * 1024,
       files: 5
@@ -40,7 +42,7 @@ async function getFeed(){
     safeFileNames: /package.json/
   }))
 
-  app.post('/upload', function(req, res) {
+  server.post('/upload', function(req, res) {
   var sampleFile;
 
   if (!req.files) {
@@ -61,7 +63,7 @@ async function getFeed(){
     }
   });
 });
-  app.get('/', function (req, res) {
+  server.get('/', function (req, res) {
     getFeed().then(function(feed){
       res.type('application/rss+xml; charset=UTF-8')
       res.send(feed);
@@ -69,6 +71,6 @@ async function getFeed(){
   })
 
 const port = process.env.PORT || 3000;
-  app.listen(port, function () {
+  server.listen(port, function () {
     console.log('Example app listening on port ' + port)
   })
