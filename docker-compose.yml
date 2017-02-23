@@ -1,0 +1,13 @@
+version: "2"
+services:
+  app:
+    build:
+      context: .
+  test:
+    build:
+      context: .
+    depends_on:
+      - "app"
+    command: ["npm", "test"]
+    environment:
+      - GAVRIEL_URL=http://app:3030

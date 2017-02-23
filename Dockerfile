@@ -1,4 +1,5 @@
 FROM node:7.6
+LABEL maintainer "omerlh@gmail.com"
 RUN npm install -g yarn
 
 WORKDIR /usr/src/app
