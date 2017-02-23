@@ -3,34 +3,13 @@
 const axios = require('axios');
 const packageFile = require('./package.json');
 const restify = require('restify');
+const NPMPackagesParser = require('./server/parsers/npm.js');
+const npmParser = new NPMPackagesParser();
 var RSS = require('rss');
 var fileUpload = require('express-fileupload');
 
 async function getFeed(){
-  var feed = new RSS({
-    title: packageFile.name
-  });
-
-  const uris = Object.keys(packageFile.dependencies).map(async function(key) {
-    return await axios.get('https://api.npms.io/v2/package/' + key);
-  });
-
-  return axios.all(uris)
-    .then(function(results){
-
-      results.forEach(function(result){
-        var meta = result.data.collected.metadata
-        feed.item({
-          title: meta.name + ' - ' + meta.version,
-          description: meta.description,
-          url: 'https://api.npms.io/v2/package/' + meta.name,
-          guid: meta.name + '#' + meta.version,
-          date: meta.date
-        })
-      })
-    }).then(function(){
-      return feed.xml({indent: true});
-    });
+  return await npmParser.parse('./package,json');
 }
 
   var server = restify.createServer();
