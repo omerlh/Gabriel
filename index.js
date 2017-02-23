@@ -1,53 +1,22 @@
 'use strict';
 
 const axios = require('axios');
-const packageFile = require('./package.json');
 const restify = require('restify');
-const NPMPackagesParser = require('./server/parsers/npm.js');
-const npmParser = new NPMPackagesParser();
-var RSS = require('rss');
-var fileUpload = require('express-fileupload');
+const fileUpload = require('express-fileupload');
+const Router = require('./server/router.js')
+const router = new Router();
 
-async function getFeed(){
-  return await npmParser.parse('./package,json');
-}
+let server = restify.createServer();
 
-  var server = restify.createServer();
-  server.use(fileUpload({
-    limits: {
-      fileSize: 50 * 1024,
-      files: 5
-    },
-    safeFileNames: /package.json/
-  }))
+server.use(fileUpload({
+  limits: {
+    fileSize: 50 * 1024,
+    files: 5
+  },
+  safeFileNames: /package.json/
+}));
 
-  server.post('/upload', function(req, res) {
-  var sampleFile;
-
-  if (!req.files) {
-    res.send('No files were uploaded.');
-    return;
-  }
-
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  sampleFile = req.files.sampleFile;
-
-  // Use the mv() method to place the file somewhere on your server
-  sampleFile.mv('upload/package.json', function(err) {
-    if (err) {
-      res.status(500).send(err);
-    }
-    else {
-      res.send('File uploaded!');
-    }
-  });
-});
-  server.get('/', function (req, res) {
-    getFeed().then(function(feed){
-      res.type('application/rss+xml; charset=UTF-8')
-      res.send(feed);
-    })
-  })
+router.route(server);
 
 const port = process.env.PORT || 3000;
   server.listen(port, function () {
