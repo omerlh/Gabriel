@@ -7,8 +7,8 @@
     "test": "mocha",
     "start": "node index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "omerlh@gmail.com",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.15.3",
     "body-parser": "^1.15.2",
