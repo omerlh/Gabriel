@@ -1,0 +1,8 @@
+FROM gabriel
+
+ENV NODE_ENV dev
+ENV GAVRIEL_URL=http://localhost
+
+RUN yarn install
+
+CMD ["npm", "test"]
