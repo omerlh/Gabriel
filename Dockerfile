@@ -2,7 +2,7 @@ FROM node:7.6
 LABEL maintainer "omerlh@gmail.com"
 LABEL license MIT
 
-RUN npm install -g yarn
+RUN npm install -g yarn@0.21.3
 
 ENV NODE_ENV production
 
