@@ -1,0 +1,5 @@
+FROM gabriel
+
+RUN yarn global add nodemon
+
+CMD ["nodemon", "index.js"]

@@ -11,7 +11,7 @@ class NPMPackagesParser {
       title: packageFile.name
     });
 
-    for (let name of packageFile.dependencies) {
+    for (let name in packageFile.dependencies) {
       let result = await axios.get(`https://api.npms.io/v2/package/${name}`);
       var meta = result.data.collected.metadata
       feed.item({

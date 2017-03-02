@@ -3,13 +3,19 @@ services:
   app:
     build:
       context: .
+      dockerfile: "Dockerfile.local"
+    volumes:
+      - .:/usr/src/app
     environment:
       - NODE_ENV=production
   test:
     build:
       context: .
+      dockerfile: "Dockerfile.test"
+    volumes:
+      - .:/usr/src/app
     depends_on:
       - "app"
-    command: ["npm", "test"]
+    command: npm run test-watch
     environment:
       - GAVRIEL_URL=http://app:3030
